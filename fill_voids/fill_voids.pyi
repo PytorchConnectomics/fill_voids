@@ -51,3 +51,32 @@ def fill(  # type: ignore[misc]
     """
 
 def void_shard() -> None: ...
+@overload
+def fill_multi_label(
+    labels: NDArray[_T],
+    in_place: bool = False,
+    *,
+    return_fill_count: Literal[False] = False,
+    connectivity: typing.Optional[int] = None,
+) -> NDArray[_T]: ...
+@overload
+def fill_multi_label(
+    labels: NDArray[_T],
+    in_place: bool = False,
+    *,
+    return_fill_count: Literal[True],
+    connectivity: typing.Optional[int] = None,
+) -> tuple[NDArray[_T], int]: ...
+def fill_multi_label(  # type: ignore[misc]
+    labels: NDArray[_T],
+    in_place: bool = False,
+    return_fill_count: bool = False,
+    connectivity: typing.Optional[int] = None,
+) -> Union[NDArray[_T], tuple[NDArray[_T], int]]:
+    """Multi-label generalization of :func:`fill`.
+
+    For each maximal connected region of ``0`` voxels (a void), fills it
+    with label ``L`` iff every path from the void to the image exterior
+    passes through a voxel of ``L`` (``L`` is a RAG dominator of the
+    void). Voids trapped between two distinct shells are left unfilled.
+    """
